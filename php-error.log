@@ -1,0 +1,48 @@
+[12-Sep-2025 07:39:37 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined method App\Controllers\UserController::handleRequest() in C:\xampp\htdocs\Re-Task3\index.php:21
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\Re-Task3\index.php on line 21
+[12-Sep-2025 08:25:03 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined method App\Controllers\UserController::handleRequest() in C:\xampp\htdocs\Re-Task3\index.php:21
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\Re-Task3\index.php on line 21
+[12-Sep-2025 08:26:00 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined method App\Controllers\UserController::handleRequest() in C:\xampp\htdocs\Re-Task3\index.php:21
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\Re-Task3\index.php on line 21
+[12-Sep-2025 08:26:07 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined method App\Controllers\UserController::handleRequest() in C:\xampp\htdocs\Re-Task3\index.php:21
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\Re-Task3\index.php on line 21
+[12-Sep-2025 08:27:21 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined method App\Controllers\UserController::handleRequest() in C:\xampp\htdocs\Re-Task3\index.php:21
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\Re-Task3\index.php on line 21
+[12-Sep-2025 08:27:22 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined method App\Controllers\UserController::handleRequest() in C:\xampp\htdocs\Re-Task3\index.php:21
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\Re-Task3\index.php on line 21
+[12-Sep-2025 08:39:09 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined method App\Controllers\UserController::handleRequest() in C:\xampp\htdocs\Re-Task3\index.php:21
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\Re-Task3\index.php on line 21
+[12-Sep-2025 08:41:41 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined method App\Controllers\UserController::handleRequest() in C:\xampp\htdocs\Re-Task3\index.php:21
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\Re-Task3\index.php on line 21
+[12-Sep-2025 08:41:42 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined method App\Controllers\UserController::handleRequest() in C:\xampp\htdocs\Re-Task3\index.php:21
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\Re-Task3\index.php on line 21
+[12-Sep-2025 08:41:43 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined method App\Controllers\UserController::handleRequest() in C:\xampp\htdocs\Re-Task3\index.php:21
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\Re-Task3\index.php on line 21
+[12-Sep-2025 08:41:54 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined method App\Controllers\UserController::handleRequest() in C:\xampp\htdocs\Re-Task3\index.php:21
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\Re-Task3\index.php on line 21
+[15-Sep-2025 07:40:25 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to undefined method App\Controllers\UserController::add() in C:\xampp\htdocs\Re-Task4\index.php:17
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\Re-Task4\index.php on line 17

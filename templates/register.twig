@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Đăng ký</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="bg-white shadow-md rounded-xl p-8 w-full max-w-md">
+    <h1 class="text-2xl font-bold mb-6 text-center">Đăng ký</h1>
+
+    {% if error %}
+      <p class="text-red-500 mb-4">{{ error }}</p>
+    {% endif %}
+
+    <form method="POST" class="space-y-4">
+      <input type="text" name="username" placeholder="Username" required
+        class="w-full border rounded px-3 py-2">
+      <input type="email" name="email" placeholder="Email" required
+        class="w-full border rounded px-3 py-2">
+      <input type="text" name="phone" placeholder="Số điện thoại"
+        class="w-full border rounded px-3 py-2">
+      <input type="date" name="birthday"
+        class="w-full border rounded px-3 py-2">
+      <input type="password" name="password" placeholder="Mật khẩu" required
+        class="w-full border rounded px-3 py-2">
+      <button type="submit"
+        class="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+        Đăng ký
+      </button>
+    </form>
+
+    <p class="mt-4 text-center">
+      Đã có tài khoản? <a href="login.php" class="text-blue-600 hover:underline">Đăng nhập</a>
+    </p>
+  </div>
+</body>
+</html>

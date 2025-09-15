@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Management</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style type="text/tailwindcss">
+    @theme { 
+      --color-brand: #2563eb; 
+    }
+    .avatar-container {
+      @apply relative inline-block;
+    }
+    .avatar-preview {
+      @apply w-12 h-12 rounded-full object-cover border-2 border-gray-300;
+    }
+    .avatar-upload-btn {
+      @apply absolute bottom-0 right-0 bg-brand text-white rounded-full p-1 text-xs;
+    }
+    .avatar-placeholder {
+      @apply w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 font-sans">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-8 px-6 py-4">
+    <h1 class="text-3xl font-bold text-brand">Quản lý người dùng</h1>
+    <div class="flex items-center gap-4">
+      {% if session.user_id is defined %}
+        <div class="flex items-center gap-2">
+          <!-- Hiển thị avatar người dùng đăng nhập -->
+          {% if session.avatar %}
+              <img 
+                src="http://localhost/Re-Task4/uploads/avatar/{{ user.avatar }}" 
+                alt="Avatar của {{ user.username }}"
+                class="avatar-preview"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+              >
+          {# {% else %}
+            <div class="avatar-placeholder w-8 h-8 text-sm">{{ session.username|first|upper }}</div> #}
+          {% endif %}
+          <span class="text-gray-700">Xin chào, {{ session.username }}</span>
+        </div>
+        <a href="logout.php" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">Đăng xuất</a>
+      {% else %}
+        <a href="login.php" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">Đăng nhập</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Nút mở modal thêm -->
+  <div class="mx-6 mb-8">
+    <button onclick="openModal('addUserModal')" class="bg-brand text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">+ Thêm người dùng</button>
+  </div>
+
+  <!-- Modal Thêm -->
+  <div id="addUserModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-xl p-6 w-full max-w-lg">
+      <h2 class="text-xl font-semibold mb-4">Thêm người dùng</h2>
+      <form method="POST" enctype="multipart/form-data" class="grid grid-cols-1 gap-4">
+        <div class="flex flex-col items-center mb-4">
+          <div class="avatar-container mb-2">
+            <div id="add-avatar-preview" class="avatar-placeholder">AV</div>
+            <label for="add-avatar" class="avatar-upload-btn cursor-pointer">
+              📷
+              <input type="file" id="add-avatar" name="avatar" accept="image" class="hidden" onchange="previewImage(this, 'add-avatar-preview')">
+            </label>
+          </div>
+          <span class="text-sm text-gray-500">Chọn avatar (tùy chọn)</span>
+        </div>
+        <input type="text" name="username" placeholder="Username" required class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand">
+        <input type="email" name="email" placeholder="Email" required class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand">
+        <input type="text" name="phone" placeholder="Phone" class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand">
+        <input type="date" name="birthday" class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand">
+        <input type="password" name="password" placeholder="Mật khẩu" required class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand">
+        <div class="flex gap-4">
+          <button type="submit" name="add" class="bg-brand text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Thêm</button>
+          <button type="button" onclick="closeModal('addUserModal')" class="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500 transition">Hủy</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Form Tìm kiếm -->
+  <div class="bg-white shadow-md rounded-xl p-6 mb-8 mx-6">
+    <h2 class="text-xl font-semibold mb-4">Tìm kiếm</h2>
+    <form method="GET" class="flex flex-col md:flex-row gap-4">
+      <input type="text" name="search" placeholder="Tìm theo username, email hoặc phone" value="{{ search }}" class="flex-1 border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400">
+      <div class="flex gap-3">
+        <button type="submit" class="bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition">🔍 Tìm kiếm</button>
+        <a href="index.php" class="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500 transition">Reset</a>
+      </div>
+    </form>
+  </div>
+
+  <!-- Bảng danh sách -->
+  <div class="bg-white shadow-md rounded-xl p-6 mx-6">
+    <h2 class="text-xl font-semibold mb-4">Danh sách người dùng</h2>
+    <div class="overflow-x-auto">
+      <table class="min-w-full border border-gray-200 rounded-lg">
+        <thead class="bg-brand text-white">
+          <tr>
+            <th class="px-4 py-2 text-left">Avatar</th>
+            <th class="px-4 py-2 text-left">ID</th>
+            <th class="px-4 py-2 text-left">Username</th>
+            <th class="px-4 py-2 text-left">Email</th>
+            <th class="px-4 py-2 text-left">Phone</th>
+            <th class="px-4 py-2 text-left">Birthday</th>
+            <th class="px-4 py-2 text-left">Quyền</th>
+            <th class="px-4 py-2 text-left">Ngày tạo</th>
+            <th class="px-4 py-2 text-left">Hành động</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          {% for user in users %}
+          <tr class="hover:bg-gray-50">
+            <td class="px-4 py-2">
+              {% if user.avatar %}
+                <img src="http://localhost/Re-Task4/uploads/avatar/{{ user.avatar }}" alt="Avatar" class="avatar-preview">
+              {% else %}
+                <div class="avatar-placeholder">{{ user.username|first|upper }}</div>
+              {% endif %}
+            </td>
+            <td class="px-4 py-2">{{ user.id }}</td>
+            <td class="px-4 py-2 font-medium text-gray-800">{{ user.username }}</td>
+            <td class="px-4 py-2 text-gray-600">{{ user.email }}</td>
+            <td class="px-4 py-2 text-gray-600">{{ user.phone }}</td>
+            <td class="px-4 py-2 text-gray-600">{{ user.birthday }}</td>
+            <td class="px-4 py-2">{{ user.is_admin ? 'Admin' : 'User' }}</td>
+            <td class="px-4 py-2 text-gray-500">{{ user.created_at }}</td>
+            <td class="px-4 py-2">
+              <button
+                type="button"
+                class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition edit-btn"
+                data-id="{{ user.id }}"
+                data-username="{{ user.username|e('html_attr') }}"
+                data-email="{{ user.email|e('html_attr') }}"
+                data-phone="{{ user.phone|e('html_attr') }}"
+                data-birthday="{{ user.birthday|e('html_attr') }}"
+                data-is_admin="{{ user.is_admin ? '1' : '0' }}"
+                data-avatar="{{ user.avatar|e('html_attr') }}"
+              >
+                ✏️ Sửa
+              </button>
+              <a href="?delete={{ user.id }}" onclick="return confirm('Bạn có chắc muốn xóa?')" class="inline-block mt-2 text-red-600 hover:underline">🗑️ Xóa</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal Sửa -->
+  <div id="editUserModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-xl p-6 w-full max-w-lg">
+      <h2 class="text-xl font-semibold mb-4">Sửa người dùng</h2>
+      <form id="editUserForm" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 gap-4">
+        <input type="hidden" name="id" id="edit-id">
+        <input type="hidden" name="current_avatar" id="edit-current-avatar">
+        
+        <div class="flex flex-col items-center mb-4">
+          <div class="avatar-container mb-2">
+            <div id="edit-avatar-preview" class="avatar-placeholder">AV</div>
+            <label for="edit-avatar" class="avatar-upload-btn cursor-pointer">
+              📷
+              <input type="file" id="edit-avatar" name="avatar" accept="image" class="hidden" onchange="previewImage(this, 'edit-avatar-preview')">
+            </label>
+          </div>
+          <span class="text-sm text-gray-500">Chọn avatar mới (tùy chọn)</span>
+          <label class="mt-2 text-sm flex items-center">
+            <input type="checkbox" name="remove_avatar" id="remove-avatar" class="mr-2">
+            <span>Xóa avatar hiện tại</span>
+          </label>
+        </div>
+        
+        <input type="text" name="username" id="edit-username" required class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand" placeholder="Username">
+        <input type="email" name="email" id="edit-email" required class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand" placeholder="Email">
+        <input type="text" name="phone" id="edit-phone" class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand" placeholder="Phone">
+        <input type="date" name="birthday" id="edit-birthday" class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand">
+        <input type="password" name="password" id="edit-password" placeholder="Đổi mật khẩu (nếu cần)" class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand">
+        <select name="is_admin" id="edit-is_admin" class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand">
+          <option value="0">User</option>
+          <option value="1">Admin</option>
+        </select>
+        <div class="flex gap-4">
+          <button type="submit" name="edit" class="bg-brand text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Sửa</button>
+          <button type="button" id="editCancelBtn" class="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500 transition">Hủy</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function openModal(modalId) {
+      document.getElementById(modalId).classList.remove('hidden');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.add('hidden');
+    }
+
+    // Xử lý preview ảnh
+    function previewImage(input, previewId) {
+      const preview = document.getElementById(previewId);
+      const file = input.files[0];
+      
+      if (file) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+          // Nếu là div placeholder, thay thế bằng img
+          if (preview.tagName === 'DIV') {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.className = preview.className + ' avatar-preview';
+            img.id = previewId;
+            preview.parentNode.replaceChild(img, preview);
+          } else {
+            // Nếu đã là img, chỉ cần cập nhật src
+            preview.src = e.target.result;
+          }
+        }
+        
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // xử lý nút Sửa
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+      btn.addEventListener('click', function () {
+        document.getElementById('edit-id').value = this.dataset.id;
+        document.getElementById('edit-username').value = this.dataset.username;
+        document.getElementById('edit-email').value = this.dataset.email;
+        document.getElementById('edit-phone').value = this.dataset.phone;
+        document.getElementById('edit-birthday').value = this.dataset.birthday;
+        document.getElementById('edit-is_admin').value = this.dataset.is_admin;
+        document.getElementById('edit-current-avatar').value = this.dataset.avatar;
+        document.getElementById('edit-password').value = ''; // reset
+        document.getElementById('remove-avatar').checked = false;
+        
+        // Xử lý hiển thị avatar hiện tại
+        const preview = document.getElementById('edit-avatar-preview');
+        if (this.dataset.avatar) {
+          // Nếu có avatar, hiển thị ảnh
+          if (preview.tagName === 'DIV') {
+            const img = document.createElement('img');
+            img.src = 'uploads/' + this.dataset.avatar;
+            img.className = 'avatar-preview';
+            img.id = 'edit-avatar-preview';
+            preview.parentNode.replaceChild(img, preview);
+          } else {
+            preview.src = 'uploads/' + this.dataset.avatar;
+          }
+        } else {
+          // Nếu không có avatar, hiển thị placeholder
+          if (preview.tagName !== 'DIV') {
+            const div = document.createElement('div');
+            div.className = 'avatar-placeholder';
+            div.id = 'edit-avatar-preview';
+            div.textContent = this.dataset.username.charAt(0).toUpperCase();
+            preview.parentNode.replaceChild(div, preview);
+          } else {
+            preview.textContent = this.dataset.username.charAt(0).toUpperCase();
+          }
+        }
+        
+        openModal('editUserModal');
+      });
+    });
+
+    document.getElementById('editCancelBtn').addEventListener('click', () => closeModal('editUserModal'));
+    document.getElementById('editUserModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal('editUserModal'); });
+  </script>
+</body>
+</html>

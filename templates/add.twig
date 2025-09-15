@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Thêm người dùng</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style>
+    .avatar-container {
+      @apply relative inline-block;
+    }
+    .avatar-preview {
+      @apply w-20 h-20 rounded-full object-cover border-2 border-gray-300;
+    }
+    .avatar-upload-btn {
+      @apply absolute bottom-0 right-0 bg-blue-600 text-white rounded-full p-1 text-xs cursor-pointer;
+    }
+    .avatar-placeholder {
+      @apply w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold text-2xl;
+    }
+    .avatar-crop-preview {
+      @apply w-16 h-16 rounded-full object-cover border-2 border-gray-300 mx-auto mt-2;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="bg-white shadow-md rounded-xl p-8 w-full max-w-md">
+    <h1 class="text-2xl font-bold mb-6 text-center">Thêm người dùng</h1>
+
+    {% if error %}
+      <p class="text-red-500 mb-4 text-center">{{ error }}</p>
+    {% endif %}
+
+    <!-- Phần upload avatar -->
+    <div class="flex flex-col items-center mb-4">
+      <div class="avatar-container">
+        <div id="avatar-preview" class="avatar-placeholder">AV</div>
+        <label for="avatar" class="avatar-upload-btn">
+          📷
+          <input type="file" id="avatar" name="avatar" accept="image/*" class="hidden" onchange="previewImage(this)">
+        </label>
+      </div>
+      
+      <!-- Preview avatar crop -->
+      <div class="mt-2 text-center">
+        <p class="text-sm text-gray-500 mb-1">Avatar crop (64x64px)</p>
+        <img id="avatar-crop-preview" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSIzMiIgY3k9IjMyIiByPSIzMiIgZmlsbD0iI0Q1RDVENTQiLz4KICA8dGV4dCB4PSIzMiIgeT0iMzUiIGZvbnQtc2l6ZT0iMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM3OTc5NzkiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiI+QUk8L3RleHQ+Cjwvc3ZnPg==" class="avatar-crop-preview">
+      </div>
+    </div>
+    <p class="text-sm text-gray-500 text-center mb-4">Chọn avatar (tự động tạo bản crop 64x64px)</p>
+
+    <form method="POST" enctype="multipart/form-data" class="space-y-4">
+      <input type="hidden" id="avatar-data" name="avatar_data">
+      
+      <input type="text" name="username" placeholder="Username" required
+        value="{{ old.username|default('') }}"
+        class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+      <input type="email" name="email" placeholder="Email" required
+        value="{{ old.email|default('') }}"
+        class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+      <input type="text" name="phone" placeholder="Số điện thoại"
+        value="{{ old.phone|default('') }}"
+        class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+      <input type="date" name="birthday"
+        value="{{ old.birthday|default('') }}"
+        class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+      <input type="password" name="password" placeholder="Mật khẩu" required
+        class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+      <label class="flex items-center space-x-2">
+        <input type="checkbox" name="is_admin" value="1"
+          {% if old.is_admin is defined %}checked{% endif %}
+          class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+        <span>Admin</span>
+      </label>
+
+      <button type="submit" name="add"
+        class="w-full bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors">
+        Thêm người dùng
+      </button>
+    </form>
+
+    <p class="mt-4 text-center">
+      <a href="index.php" class="text-blue-600 hover:underline">Quay lại danh sách</a>
+    </p>
+  </div>
+
+  <script>
+    function previewImage(input) {
+      const preview = document.getElementById('avatar-preview');
+      const cropPreview = document.getElementById('avatar-crop-preview');
+      const file = input.files[0];
+      
+      if (file) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+          // Hiển thị preview ảnh gốc
+          if (preview.tagName === 'DIV') {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.className = 'avatar-preview';
+            img.id = 'avatar-preview';
+            preview.parentNode.replaceChild(img, preview);
+          } else {
+            preview.src = e.target.result;
+          }
+          
+          // Tạo và hiển thị avatar crop
+          createAvatarCrop(e.target.result);
+        }
+        
+        reader.readAsDataURL(file);
+      }
+    }
+    
+    function createAvatarCrop(imageSrc) {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      
+      img.onload = function() {
+        // Thiết lập kích thước canvas 64x64
+        canvas.width = 64;
+        canvas.height = 64;
+        
+        // Tính toán để crop ảnh thành hình vuông
+        const size = Math.min(img.width, img.height);
+        const sx = (img.width - size) / 2;
+        const sy = (img.height - size) / 2;
+        
+        // Vẽ ảnh đã crop lên canvas
+        ctx.drawImage(img, sx, sy, size, size, 0, 0, 64, 64);
+        
+        // Hiển thị preview
+        const cropPreview = document.getElementById('avatar-crop-preview');
+        cropPreview.src = canvas.toDataURL();
+        
+        // Lưu dữ liệu ảnh crop vào hidden input
+        document.getElementById('avatar-data').value = canvas.toDataURL();
+      };
+      
+      img.src = imageSrc;
+    }
+  </script>
+</body>
+</html>

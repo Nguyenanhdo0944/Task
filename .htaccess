@@ -1,0 +1,18 @@
+RewriteEngine On
+RewriteBase /Re-Task4/
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{DOCUMENT_ROOT}/Re-Task4/$1.php -f
+RewriteRule ^(.*)$ $1.php [L]
+
+RewriteRule ^user/add$ index.php?controller=User&action=add [L]
+RewriteRule ^user/edit/([0-9]+)$ index.php?controller=User&action=edit&id=$1 [L]
+RewriteRule ^user/remove/([0-9]+)$ index.php?controller=User&action=remove&id=$1 [L]
+
+RewriteRule ^user/index$ index [L]
+RewriteRule ^user/edit/index$ index [L]
+RewriteRule ^user/remove/index$ index [L]
+
+php_flag log_errors On
+php_value error_log "C:/xampp/htdocs/Re-Task4/php-error.log"

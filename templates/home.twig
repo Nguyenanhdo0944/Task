@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Trang cá nhân - {{ user.username }}</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style type="text/tailwindcss">
+    @theme {
+      --color-primary: #3b82f6;
+      --color-primary-hover: #2563eb;
+      --color-secondary: #f3f4f6;
+      --color-accent: #f59e0b;
+    }
+    .avatar-preview {
+      @apply w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg mx-auto transition-all duration-300 hover:scale-105 hover:shadow-xl;
+    }
+    .avatar-placeholder {
+      @apply w-32 h-32 rounded-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center border-4 border-white shadow-lg mx-auto transition-all duration-300 hover:scale-105;
+    }
+    .info-card {
+      @apply bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 shadow-sm border border-blue-100;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-white to-purple-50 min-h-screen font-sans">
+  <div class="max-w-2xl mx-auto py-12 px-4">
+    <!-- Profile Card -->
+    <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+      <!-- Header with gradient -->
+      <div class="bg-gradient-to-r from-blue-600 to-purple-600 h-24 relative">
+        <div class="absolute -bottom-12 left-1/2 transform -translate-x-1/2">
+          <!-- Avatar Section -->
+          <div class="relative">
+            {% if user.avatar %}
+              <img 
+                src="http://localhost/Re-Task4/uploads/avatar/{{ user.avatar }}" 
+                alt="Avatar của {{ user.username }}"
+                class="avatar-preview"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+              >
+            {% endif %}
+            {# <div class="avatar-placeholder {% if user.avatar %}hidden{% endif %}">
+              <span class="text-4xl font-bold text-blue-600">{{ user.username|first|upper }}</span>
+            </div> #}
+            
+            <!-- Online status indicator -->
+            <div class="absolute bottom-2 right-2 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Content -->
+      <div class="pt-16 pb-8 px-8 text-center">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">
+          {{ user.username }}
+        </h1>
+        
+        <!-- Badge for admin/user -->
+        <div class="inline-block bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full mb-6">
+          {% if user.is_admin %}Quản trị viên{% else %}Thành viên{% endif %}
+        </div>
+
+        <!-- User Information -->
+        <div class="space-y-4 mb-8">
+          <div class="info-card text-left">
+            <div class="flex items-center space-x-3">
+              <span class="text-2xl">📧</span>
+              <div>
+                <p class="text-sm text-gray-600">Email</p>
+                <p class="font-medium text-gray-800">{{ user.email }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-card text-left">
+            <div class="flex items-center space-x-3">
+              <span class="text-2xl">📱</span>
+              <div>
+                <p class="text-sm text-gray-600">Số điện thoại</p>
+                <p class="font-medium text-gray-800">{{ user.phone }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-card text-left">
+            <div class="flex items-center space-x-3">
+              <span class="text-2xl">🎂</span>
+              <div>
+                <p class="text-sm text-gray-600">Ngày sinh</p>
+                <p class="font-medium text-gray-800">{{ user.birthday }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          {# <a href="edit-profile" 
+             class="flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+            <span>✏️</span>
+            <span>Chỉnh sửa hồ sơ</span>
+          </a> #}
+          
+          <a href="logout.php"
+             class="flex items-center justify-center space-x-2 bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+            <span>🚪</span>
+            <span>Đăng xuất</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    {# <!-- Stats Section (Optional) -->
+    <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="bg-white rounded-xl p-4 text-center shadow-md border border-gray-100">
+        <div class="text-2xl font-bold text-blue-600">128</div>
+        <div class="text-sm text-gray-600">Bài viết</div>
+      </div>
+      <div class="bg-white rounded-xl p-4 text-center shadow-md border border-gray-100">
+        <div class="text-2xl font-bold text-green-600">2.4K</div>
+        <div class="text-sm text-gray-600">Người theo dõi</div>
+      </div>
+      <div class="bg-white rounded-xl p-4 text-center shadow-md border border-gray-100">
+        <div class="text-2xl font-bold text-purple-600">356</div>
+        <div class="text-sm text-gray-600">Đang theo dõi</div>
+      </div>
+    </div>
+  </div> #}
+
+  <!-- Footer -->
+  <footer class="text-center text-gray-500 text-sm mt-12 pb-6">
+    <p>© 2024 Trang cá nhân. Tất cả quyền được bảo lưu.</p>
+  </footer>
+
+  <script>
+    // Hiệu ứng hover cho avatar
+    document.addEventListener('DOMContentLoaded', function() {
+      const avatar = document.querySelector('.avatar-preview');
+      const placeholder = document.querySelector('.avatar-placeholder');
+      
+      if (avatar) {
+        avatar.addEventListener('mouseenter', function() {
+          this.style.transform = 'scale(1.05)';
+        });
+        avatar.addEventListener('mouseleave', function() {
+          this.style.transform = 'scale(1)';
+        });
+      }
+      
+      if (placeholder) {
+        placeholder.addEventListener('mouseenter', function() {
+          this.style.transform = 'scale(1.05)';
+        });
+        placeholder.addEventListener('mouseleave', function() {
+          this.style.transform = 'scale(1)';
+        });
+      }
+    });
+  </script>
+</body>
+</html>

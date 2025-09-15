@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Sửa người dùng</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="bg-white shadow-md rounded-xl p-8 w-full max-w-md">
+    <h1 class="text-2xl font-bold mb-6 text-center">Sửa người dùng</h1>
+
+    {% if error %}
+      <p class="text-red-500 mb-4">{{ error }}</p>
+    {% endif %}
+
+    <form method="POST" class="space-y-4">
+      <!-- hidden id -->
+      <input type="hidden" name="id" value="{{ user.id }}">
+
+      <input type="text" name="username" placeholder="Username" required
+        value="{{ user.username|default('') }}"
+        class="w-full border rounded px-3 py-2">
+
+      <input type="email" name="email" placeholder="Email" required
+        value="{{ user.email|default('') }}"
+        class="w-full border rounded px-3 py-2">
+
+      <input type="text" name="phone" placeholder="Số điện thoại"
+        value="{{ user.phone|default('') }}"
+        class="w-full border rounded px-3 py-2">
+
+      <input type="date" name="birthday"
+        value="{{ user.birthday|default('') }}"
+        class="w-full border rounded px-3 py-2">
+
+      <input type="password" name="password" placeholder="Mật khẩu (để trống nếu không đổi)"
+        class="w-full border rounded px-3 py-2">
+
+      <label class="flex items-center space-x-2">
+        <input type="checkbox" name="is_admin" value="1"
+          {% if user.is_admin == 1 %}checked{% endif %}
+          class="h-4 w-4 text-blue-600 border-gray-300 rounded">
+        <span>Admin</span>
+      </label>
+
+      <button type="submit" name="edit"
+        class="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+        Lưu thay đổi
+      </button>
+    </form>
+
+    <p class="mt-4 text-center">
+      <a href="index.php" class="text-blue-600 hover:underline">Quay lại danh sách</a>
+    </p>
+  </div>
+</body>
+</html>
